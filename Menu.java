@@ -37,7 +37,7 @@ public class Menu extends JFrame {
 		 * are a new customer, or will ask them to log in if they are an existing
 		 * customer or admin.
 		 */
-		JFrameMenuSuper js = new JFrameMenuSuper();
+		GuiComponents js = new GuiComponents();
 		f = js.menuFrame("User Type", 400, 300);
 
 		JPanel userTypePanel = new JPanel();
@@ -71,7 +71,7 @@ public class Menu extends JFrame {
 				// if user selects NEW CUSTOMER
 				if (user.equals("New Customer")) {
 					f.dispose();
-					existCustomer();
+					newCustomer();
 				}
 
 				// if user select ADMIN
@@ -90,7 +90,7 @@ public class Menu extends JFrame {
 
 	public void admin() {
 		// dispose();
-		JFrameMenuSuper js = new JFrameMenuSuper();
+		GuiComponents js = new GuiComponents();
 		f = js.menuFrame("Administrator Menu", 400, 400);
 		f.setVisible(true);
 
@@ -151,83 +151,9 @@ public class Menu extends JFrame {
 
 				customerLoop("Customer ID of Customer You Wish to Apply Charges to:");
 				f.dispose();
-				f = js.menuFrame("Administrator Menu", 400, 300);
-				f.setVisible(true);
-
-				JComboBox<String> box = new JComboBox<String>();
-				for (int i = 0; i < customer.getAccounts().size(); i++) {
-
-					box.addItem(customer.getAccounts().get(i).getNumber());
-				}
-
-				box.getSelectedItem();
-
-				JPanel boxPanel = new JPanel();
-				boxPanel.add(box);
-
-				JPanel buttonPanel = new JPanel();
-				JButton continueButton = new JButton("Apply Charge");
-				JButton returnButton = new JButton("Return");
-				buttonPanel.add(continueButton);
-				buttonPanel.add(returnButton);
-				Container content = f.getContentPane();
-				content.setLayout(new GridLayout(2, 1));
-
-				content.add(boxPanel);
-				content.add(buttonPanel);
-
-				if (customer.getAccounts().isEmpty()) {
-					JOptionPane.showMessageDialog(f,
-							"This customer has no accounts! \n The admin must add acounts to this customer.", "Oops!",
-							JOptionPane.INFORMATION_MESSAGE);
-					f.dispose();
-					admin();
-				} else {
-
-					for (int i = 0; i < customer.getAccounts().size(); i++) {
-						if (customer.getAccounts().get(i).getNumber() == box.getSelectedItem()) {
-							acc = customer.getAccounts().get(i);
-						}
-					}
-
-					continueButton.addActionListener(new ActionListener() {
-						public void actionPerformed(ActionEvent ae) {
-							String euro = "\u20ac";
-
-							if (acc instanceof CustomerDepositAccount) {
-
-								JOptionPane.showMessageDialog(f, "25" + euro + " deposit account fee aplied.", "",
-										JOptionPane.INFORMATION_MESSAGE);
-								acc.setBalance(acc.getBalance() - 25);
-								JOptionPane.showMessageDialog(f, "New balance = " + acc.getBalance(), "Success!",
-										JOptionPane.INFORMATION_MESSAGE);
-							}
-
-							if (acc instanceof CustomerCurrentAccount) {
-
-								JOptionPane.showMessageDialog(f, "15" + euro + " current account fee aplied.", "",
-										JOptionPane.INFORMATION_MESSAGE);
-								acc.setBalance(acc.getBalance() - 25);
-								JOptionPane.showMessageDialog(f, "New balance = " + acc.getBalance(), "Success!",
-										JOptionPane.INFORMATION_MESSAGE);
-							}
-
-							f.dispose();
-							admin();
-						}
-					});
-
-					returnButton.addActionListener(new ActionListener() {
-						public void actionPerformed(ActionEvent ae) {
-							f.dispose();
-							menuStart();
-						}
-					});
-
-				}
+				bankChargeMenu();
 
 			}
-
 		});
 
 		interestButton.addActionListener(new ActionListener() {
@@ -235,89 +161,7 @@ public class Menu extends JFrame {
 				customerLoop("Customer ID of Customer You Wish to Apply Interest to:");
 
 				f.dispose();
-				f = js.menuFrame("Administrator Menu", 400, 300);
-
-				f.setVisible(true);
-
-				JComboBox<String> box = new JComboBox<String>();
-				for (int i = 0; i < customer.getAccounts().size(); i++) {
-
-					box.addItem(customer.getAccounts().get(i).getNumber());
-				}
-
-				box.getSelectedItem();
-
-				JPanel boxPanel = new JPanel();
-
-				JLabel label = new JLabel("Select an account to apply interest to:");
-				boxPanel.add(label);
-				boxPanel.add(box);
-				JPanel buttonPanel = new JPanel();
-				JButton continueButton = new JButton("Apply Interest");
-				JButton returnButton = new JButton("Return");
-				buttonPanel.add(continueButton);
-				buttonPanel.add(returnButton);
-				Container content = f.getContentPane();
-				content.setLayout(new GridLayout(2, 1));
-
-				content.add(boxPanel);
-				content.add(buttonPanel);
-
-				if (customer.getAccounts().isEmpty()) {
-					JOptionPane.showMessageDialog(f,
-							"This customer has no accounts! \n The admin must add acounts to this customer.", "Oops!",
-							JOptionPane.INFORMATION_MESSAGE);
-					f.dispose();
-					admin();
-				} else {
-
-					for (int i = 0; i < customer.getAccounts().size(); i++) {
-						if (customer.getAccounts().get(i).getNumber() == box.getSelectedItem()) {
-							acc = customer.getAccounts().get(i);
-						}
-					}
-
-					continueButton.addActionListener(new ActionListener() {
-						public void actionPerformed(ActionEvent ae) {
-							String euro = "\u20ac";
-							double interest = 0;
-							boolean loop = true;
-
-							while (loop) {
-								String interestString = JOptionPane.showInputDialog(f,
-										"Enter interest percentage you wish to apply: \n NOTE: Please enter a numerical value. (with no percentage sign) \n E.g: If you wish to apply 8% interest, enter '8'");// the
-								// isNumeric method tests to see if the string entered was numeric.
-								if (isNumeric(interestString)) {
-
-									interest = Double.parseDouble(interestString);
-									loop = false;
-
-									acc.setBalance(acc.getBalance() + (acc.getBalance() * (interest / 100)));
-
-									JOptionPane.showMessageDialog(f, interest + "% interest applied. \n new balance = "
-											+ acc.getBalance() + euro, "Success!", JOptionPane.INFORMATION_MESSAGE);
-								}
-
-								else {
-									JOptionPane.showMessageDialog(f, "You must enter a numerical value!", "Oops!",
-											JOptionPane.INFORMATION_MESSAGE);
-								}
-
-							}
-
-							f.dispose();
-							admin();
-						}
-					});
-
-					returnButton.addActionListener(new ActionListener() {
-						public void actionPerformed(ActionEvent ae) {
-							f.dispose();
-							menuStart();
-						}
-					});
-
-				}
+				interestMenu();
 			}
 		});
 
@@ -334,372 +178,29 @@ public class Menu extends JFrame {
 		summaryButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
 				f.dispose();
-
-				f = js.menuFrame("Summary of Transactions", 400, 700);
-				f.setVisible(true);
-
-				JLabel label1 = new JLabel("Summary of all transactions: ");
-
-				JPanel returnPanel = new JPanel();
-				JButton returnButton = new JButton("Return");
-				returnPanel.add(returnButton);
-
-				JPanel textPanel = new JPanel();
-
-				textPanel.setLayout(new BorderLayout());
-				JTextArea textArea = new JTextArea(40, 20);
-				textArea.setEditable(false);
-				textPanel.add(label1, BorderLayout.NORTH);
-				textPanel.add(textArea, BorderLayout.CENTER);
-				textPanel.add(returnButton, BorderLayout.SOUTH);
-
-				JScrollPane scrollPane = new JScrollPane(textArea);
-				textPanel.add(scrollPane);
-
-				for (int a = 0; a < customerList.size(); a++)// For each
-				// customer, for
-				// each account,
-				// it displays
-				// each
-				// transaction.
-				{
-					for (int b = 0; b < customerList.get(a).getAccounts().size(); b++) {
-						acc = customerList.get(a).getAccounts().get(b);
-						for (int c = 0; c < customerList.get(a).getAccounts().get(b).getTransactionList().size(); c++) {
-
-							textArea.append(acc.getTransactionList().get(c).toString());
-							// Int total =
-							// acc.getTransactionList().get(c).getAmount(); //I
-							// was going to use this to keep a running total but
-							// I couldnt get it working.
-
-						}
-					}
-				}
-
-				textPanel.add(textArea);
-				content.removeAll();
-
-				Container content = f.getContentPane();
-				content.setLayout(new GridLayout(1, 1));
-				// content.add(label1);
-				content.add(textPanel);
-				// content.add(returnPanel);
-
-				returnButton.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent ae) {
-						f.dispose();
-						admin();
-					}
-				});
+				summaryMenu();
 			}
 		});
 
 		navigateButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
 				f.dispose();
-
-				if (customerList.isEmpty()) {
-					JOptionPane.showMessageDialog(null, "There are currently no customers to display. ");
-					admin();
-				} else {
-
-					JButton first, previous, next, last, cancel;
-					JPanel gridPanel, buttonPanel, cancelPanel;
-
-					Container content = getContentPane();
-
-					content.setLayout(new BorderLayout());
-
-					buttonPanel = new JPanel();
-					gridPanel = new JPanel(new GridLayout(8, 2));
-					cancelPanel = new JPanel();
-
-					firstNameLabel = new JLabel("First Name:", SwingConstants.LEFT);
-					surnameLabel = new JLabel("Surname:", SwingConstants.LEFT);
-					pPPSLabel = new JLabel("PPS Number:", SwingConstants.LEFT);
-					dOBLabel = new JLabel("Date of birth", SwingConstants.LEFT);
-					customerIDLabel = new JLabel("CustomerID:", SwingConstants.LEFT);
-					passwordLabel = new JLabel("Password:", SwingConstants.LEFT);
-					firstNameTextField = new JTextField(20);
-					surnameTextField = new JTextField(20);
-					pPSTextField = new JTextField(20);
-					dOBTextField = new JTextField(20);
-					customerIDTextField = new JTextField(20);
-					passwordTextField = new JTextField(20);
-
-					first = new JButton("First");
-					previous = new JButton("Previous");
-					next = new JButton("Next");
-					last = new JButton("Last");
-					cancel = new JButton("Cancel");
-
-					firstNameTextField.setText(customerList.get(0).getFirstName());
-					surnameTextField.setText(customerList.get(0).getSurname());
-					pPSTextField.setText(customerList.get(0).getPPS());
-					dOBTextField.setText(customerList.get(0).getDOB());
-					customerIDTextField.setText(customerList.get(0).getCustomerID());
-					passwordTextField.setText(customerList.get(0).getPassword());
-
-					firstNameTextField.setEditable(false);
-					surnameTextField.setEditable(false);
-					pPSTextField.setEditable(false);
-					dOBTextField.setEditable(false);
-					customerIDTextField.setEditable(false);
-					passwordTextField.setEditable(false);
-
-					gridPanel.add(firstNameLabel);
-					gridPanel.add(firstNameTextField);
-					gridPanel.add(surnameLabel);
-					gridPanel.add(surnameTextField);
-					gridPanel.add(pPPSLabel);
-					gridPanel.add(pPSTextField);
-					gridPanel.add(dOBLabel);
-					gridPanel.add(dOBTextField);
-					gridPanel.add(customerIDLabel);
-					gridPanel.add(customerIDTextField);
-					gridPanel.add(passwordLabel);
-					gridPanel.add(passwordTextField);
-
-					buttonPanel.add(first);
-					buttonPanel.add(previous);
-					buttonPanel.add(next);
-					buttonPanel.add(last);
-
-					cancelPanel.add(cancel);
-
-					content.add(gridPanel, BorderLayout.NORTH);
-					content.add(buttonPanel, BorderLayout.CENTER);
-					content.add(cancelPanel, BorderLayout.AFTER_LAST_LINE);
-					first.addActionListener(new ActionListener() {
-						public void actionPerformed(ActionEvent ae) {
-							position = 0;
-							firstNameTextField.setText(customerList.get(0).getFirstName());
-							surnameTextField.setText(customerList.get(0).getSurname());
-							pPSTextField.setText(customerList.get(0).getPPS());
-							dOBTextField.setText(customerList.get(0).getDOB());
-							customerIDTextField.setText(customerList.get(0).getCustomerID());
-							passwordTextField.setText(customerList.get(0).getPassword());
-						}
-					});
-
-					previous.addActionListener(new ActionListener() {
-						public void actionPerformed(ActionEvent ae) {
-
-							if (position < 1) {
-								// don't do anything
-							} else {
-								position = position - 1;
-
-								firstNameTextField.setText(customerList.get(position).getFirstName());
-								surnameTextField.setText(customerList.get(position).getSurname());
-								pPSTextField.setText(customerList.get(position).getPPS());
-								dOBTextField.setText(customerList.get(position).getDOB());
-								customerIDTextField.setText(customerList.get(position).getCustomerID());
-								passwordTextField.setText(customerList.get(position).getPassword());
-							}
-						}
-					});
-
-					next.addActionListener(new ActionListener() {
-						public void actionPerformed(ActionEvent ae) {
-
-							if (position == customerList.size() - 1) {
-								// don't do anything
-							} else {
-								position = position + 1;
-
-								firstNameTextField.setText(customerList.get(position).getFirstName());
-								surnameTextField.setText(customerList.get(position).getSurname());
-								pPSTextField.setText(customerList.get(position).getPPS());
-								dOBTextField.setText(customerList.get(position).getDOB());
-								customerIDTextField.setText(customerList.get(position).getCustomerID());
-								passwordTextField.setText(customerList.get(position).getPassword());
-							}
-
-						}
-					});
-
-					last.addActionListener(new ActionListener() {
-						public void actionPerformed(ActionEvent ae) {
-
-							position = customerList.size() - 1;
-
-							firstNameTextField.setText(customerList.get(position).getFirstName());
-							surnameTextField.setText(customerList.get(position).getSurname());
-							pPSTextField.setText(customerList.get(position).getPPS());
-							dOBTextField.setText(customerList.get(position).getDOB());
-							customerIDTextField.setText(customerList.get(position).getCustomerID());
-							passwordTextField.setText(customerList.get(position).getPassword());
-						}
-					});
-
-					cancel.addActionListener(new ActionListener() {
-						public void actionPerformed(ActionEvent ae) {
-							dispose();
-							admin();
-						}
-					});
-					setContentPane(content);
-					setSize(400, 300);
-					setVisible(true);
-				}
+				navigateMenu();
 			}
 		});
 
 		accountButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
 				f.dispose();
+				accountMenu();
 
-				if (customerList.isEmpty()) {
-					JOptionPane.showMessageDialog(f, "There are no customers yet!", "Oops!",
-							JOptionPane.INFORMATION_MESSAGE);
-					f.dispose();
-					admin();
-				} else {
-					boolean loop = true;
-
-					boolean found = false;
-
-					while (loop) {
-						Object customerID = JOptionPane.showInputDialog(f,
-								"Customer ID of Customer You Wish to Add an Account to:");
-
-						for (Customer aCustomer : customerList) {
-
-							if (aCustomer.getCustomerID().equals(customerID)) {
-								found = true;
-								customer = aCustomer;
-							}
-						}
-
-						if (found == false) {
-							int reply = JOptionPane.showConfirmDialog(null, null, "User not found. Try again?",
-									JOptionPane.YES_NO_OPTION);
-							if (reply == JOptionPane.YES_OPTION) {
-								loop = true;
-							} else if (reply == JOptionPane.NO_OPTION) {
-								f.dispose();
-								loop = false;
-
-								admin();
-							}
-						} else {
-							loop = false;
-							// a combo box in an dialog box that asks the admin
-							// what type of account they wish to create
-							// (deposit/current)
-							String[] choices = { "Current Account", "Deposit Account" };
-							String account = (String) JOptionPane.showInputDialog(null, "Please choose account type",
-									"Account Type", JOptionPane.QUESTION_MESSAGE, null, choices, choices[1]);
-
-							if (account.equals("Current Account")) {
-								// create current account
-								boolean valid = true;
-								double balance = 0;
-								String number = String.valueOf("C" + (customerList.indexOf(customer) + 1) * 10
-										+ (customer.getAccounts().size() + 1));// this
-								// simple
-								// algorithm
-								// generates
-								// the
-								// account
-								// number
-								ArrayList<AccountTransaction> transactionList = new ArrayList<AccountTransaction>();
-								int randomPIN = (int) (Math.random() * 9000) + 1000;
-								String pin = String.valueOf(randomPIN);
-
-								ATMCard atm = new ATMCard(randomPIN, valid);
-
-								CustomerCurrentAccount current = new CustomerCurrentAccount(atm, number, balance,
-										transactionList);
-
-								customer.getAccounts().add(current);
-								JOptionPane.showMessageDialog(f, "Account number = " + number + "\n PIN = " + pin,
-										"Account created.", JOptionPane.INFORMATION_MESSAGE);
-
-								f.dispose();
-								admin();
-							}
-
-							if (account.equals("Deposit Account")) {
-								// create deposit account
-
-								double balance = 0, interest = 0;
-								String number = String.valueOf("D" + (customerList.indexOf(customer) + 1) * 10
-										+ (customer.getAccounts().size() + 1));// this
-								// simple
-								// algorithm
-								// generates
-								// the
-								// account
-								// number
-								ArrayList<AccountTransaction> transactionList = new ArrayList<AccountTransaction>();
-
-								CustomerDepositAccount deposit = new CustomerDepositAccount(interest, number, balance,
-										transactionList);
-
-								customer.getAccounts().add(deposit);
-								JOptionPane.showMessageDialog(f, "Account number = " + number, "Account created.",
-										JOptionPane.INFORMATION_MESSAGE);
-
-								f.dispose();
-								admin();
-							}
-
-						}
-					}
-				}
 			}
 		});
 
 		deleteCustomer.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
-				boolean found = true, loop = true;
-
-				if (customerList.isEmpty()) {
-					JOptionPane.showMessageDialog(null, "There are currently no customers to display. ");
-					dispose();
-					admin();
-				} else {
-					{
-						Object customerID = JOptionPane.showInputDialog(f,
-								"Customer ID of Customer You Wish to Delete:");
-
-						for (Customer aCustomer : customerList) {
-
-							if (aCustomer.getCustomerID().equals(customerID)) {
-								found = true;
-								customer = aCustomer;
-								loop = false;
-							}
-						}
-
-						if (found == false) {
-							int reply = JOptionPane.showConfirmDialog(null, null, "User not found. Try again?",
-									JOptionPane.YES_NO_OPTION);
-							if (reply == JOptionPane.YES_OPTION) {
-								loop = true;
-							} else if (reply == JOptionPane.NO_OPTION) {
-								f.dispose();
-								loop = false;
-
-								admin();
-							}
-						} else {
-							if (customer.getAccounts().size() > 0) {
-								JOptionPane.showMessageDialog(f,
-										"This customer has accounts. \n You must delete a customer's accounts before deleting a customer ",
-										"Oops!", JOptionPane.INFORMATION_MESSAGE);
-							} else {
-								customerList.remove(customer);
-								JOptionPane.showMessageDialog(f, "Customer Deleted ", "Success.",
-										JOptionPane.INFORMATION_MESSAGE);
-							}
-						}
-
-					}
-				}
+				f.dispose();
+				deleteCustomerMenu();
 			}
 		});
 
@@ -707,10 +208,9 @@ public class Menu extends JFrame {
 			public void actionPerformed(ActionEvent ae) {
 				customerLoop("Customer ID of Customer from which you wish to delete an account");
 
-				// Here I would make the user select a an account to
-				// delete from a combo box. If the account had a balance
-				// of 0 then it would be deleted. (I do not have time to
-				// do this)
+				// Here I would make the user select a an account to delete from a combo box. If
+				// the account had a balanceof 0 then it would be deleted. (I do not have time
+				// to do this)
 
 			}
 
@@ -724,14 +224,14 @@ public class Menu extends JFrame {
 	}
 
 	public void customer(Customer e1) {
-		JFrameMenuSuper js = new JFrameMenuSuper();
+		GuiComponents js = new GuiComponents();
 		f = js.menuFrame("Customer Menu", 400, 300);
 
 		e1 = e;
 
 		f.setVisible(true);
 
-		if (e.getAccounts().size() == 0) {
+		if (e1.getAccounts().size() <= 0) {
 			JOptionPane.showMessageDialog(f,
 					"This customer does not have any accounts yet. \n An admin must create an account for this customer \n for them to be able to use customer functionality. ",
 					"Oops!", JOptionPane.INFORMATION_MESSAGE);
@@ -1047,8 +547,64 @@ public class Menu extends JFrame {
 		}
 	}
 
-	public void existCustomer() {
-		JFrameMenuSuper js = new JFrameMenuSuper();
+	public void summaryMenu() {
+		GuiComponents js = new GuiComponents();
+		f = js.menuFrame("Summary of Transactions", 400, 700);
+		f.setVisible(true);
+
+		JLabel label1 = new JLabel("Summary of all transactions: ");
+
+		JPanel returnPanel = new JPanel();
+		JButton returnButton = new JButton("Return");
+		returnPanel.add(returnButton);
+
+		JPanel textPanel = new JPanel();
+
+		textPanel.setLayout(new BorderLayout());
+		JTextArea textArea = new JTextArea(40, 20);
+		textArea.setEditable(false);
+		textPanel.add(label1, BorderLayout.NORTH);
+		textPanel.add(textArea, BorderLayout.CENTER);
+		textPanel.add(returnButton, BorderLayout.SOUTH);
+
+		JScrollPane scrollPane = new JScrollPane(textArea);
+		textPanel.add(scrollPane);
+
+		for (int a = 0; a < customerList.size(); a++)
+		// For each customer, for each account it displays each transaction.
+		{
+			for (int b = 0; b < customerList.get(a).getAccounts().size(); b++) {
+				acc = customerList.get(a).getAccounts().get(b);
+				for (int c = 0; c < customerList.get(a).getAccounts().get(b).getTransactionList().size(); c++) {
+
+					textArea.append(acc.getTransactionList().get(c).toString());
+					// Int total = acc.getTransactionList().get(c).getAmount();
+					// I was going to use this to keep a running total but I couldnt get it working.
+
+				}
+			}
+		}
+
+		textPanel.add(textArea);
+		content.removeAll();
+
+		Container content = f.getContentPane();
+		content.setLayout(new GridLayout(1, 1));
+		// content.add(label1);
+		content.add(textPanel);
+		// content.add(returnPanel);
+
+		returnButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent ae) {
+				f.dispose();
+				admin();
+			}
+		});
+
+	}
+
+	public void newCustomer() {
+		GuiComponents js = new GuiComponents();
 		f1 = js.menuFrame("Create New Customer", 400, 300);
 		Container content = f1.getContentPane();
 		content.setLayout(new BorderLayout());
@@ -1128,12 +684,12 @@ public class Menu extends JFrame {
 
 	}
 
-	public void selects(String title, String entry) {
+	public void AdminLogin(String title, String entry) {
 		boolean loop = true;
 		while (loop) {
-			Object adminUsername = JOptionPane.showInputDialog(f, title);
+			Object admindialog = JOptionPane.showInputDialog(f, title);
 
-			if (!adminUsername.equals(entry))// search admin list
+			if (!admindialog.equals(entry))// search admin list
 
 			{
 				int reply = JOptionPane.showConfirmDialog(null, null, "Incorrect Username. Try again?",
@@ -1157,7 +713,7 @@ public class Menu extends JFrame {
 	}
 
 	private JFrame editGui() {
-		JFrameMenuSuper js = new JFrameMenuSuper();
+		GuiComponents js = new GuiComponents();
 		f = js.menuFrame("Administrator Menu", 400, 300);
 
 		firstNameLabel = new JLabel("First Name:", SwingConstants.LEFT);
@@ -1245,8 +801,8 @@ public class Menu extends JFrame {
 	}
 
 	public void selectAdmin() {
-		selects("Enter Administrator Username:", "admin");
-		selects("Enter Administrator Password", "admin11");
+		AdminLogin("Enter Administrator Username:", "admin");
+		AdminLogin("Enter Administrator Password", "admin11");
 		admin();
 	}
 
@@ -1282,7 +838,7 @@ public class Menu extends JFrame {
 					}
 				}
 
-				if (found == false) {
+				if (!found) {
 					int reply = JOptionPane.showConfirmDialog(null, null, "User not found. Try again?",
 							JOptionPane.YES_NO_OPTION);
 					if (reply == JOptionPane.YES_OPTION) {
@@ -1302,8 +858,463 @@ public class Menu extends JFrame {
 		}
 	}
 
-	public static boolean isNumeric(String str) // a method that tests if a
-	// string is numeric
+	public void bankChargeMenu() {
+		GuiComponents js = new GuiComponents();
+		f = js.menuFrame("Administrator Menu", 400, 300);
+		f.setVisible(true);
+		JComboBox<String> box = new JComboBox<String>();
+		for (int i = 0; i < customer.getAccounts().size(); i++) {
+
+			box.addItem(customer.getAccounts().get(i).getNumber());
+		}
+
+		box.getSelectedItem();
+
+		JPanel boxPanel = new JPanel();
+		boxPanel.add(box);
+
+		JPanel buttonPanel = new JPanel();
+		JButton continueButton = new JButton("Apply Charge");
+		JButton returnButton = new JButton("Return");
+		buttonPanel.add(continueButton);
+		buttonPanel.add(returnButton);
+		Container content = f.getContentPane();
+		content.setLayout(new GridLayout(2, 1));
+
+		content.add(boxPanel);
+		content.add(buttonPanel);
+
+		if (customer.getAccounts().isEmpty()) {
+			JOptionPane.showMessageDialog(f,
+					"This customer has no accounts! \n The admin must add acounts to this customer.", "Oops!",
+					JOptionPane.INFORMATION_MESSAGE);
+			f.dispose();
+			admin();
+		} else {
+
+			for (int i = 0; i < customer.getAccounts().size(); i++) {
+				if (customer.getAccounts().get(i).getNumber() == box.getSelectedItem()) {
+					acc = customer.getAccounts().get(i);
+				}
+			}
+
+			continueButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent ae) {
+					String euro = "\u20ac";
+
+					if (acc instanceof CustomerDepositAccount) {
+
+						JOptionPane.showMessageDialog(f, "25" + euro + " deposit account fee aplied.", "",
+								JOptionPane.INFORMATION_MESSAGE);
+						acc.setBalance(acc.getBalance() - 25);
+						JOptionPane.showMessageDialog(f, "New balance = " + acc.getBalance(), "Success!",
+								JOptionPane.INFORMATION_MESSAGE);
+					}
+
+					if (acc instanceof CustomerCurrentAccount) {
+
+						JOptionPane.showMessageDialog(f, "15" + euro + " current account fee aplied.", "",
+								JOptionPane.INFORMATION_MESSAGE);
+						acc.setBalance(acc.getBalance() - 25);
+						JOptionPane.showMessageDialog(f, "New balance = " + acc.getBalance(), "Success!",
+								JOptionPane.INFORMATION_MESSAGE);
+					}
+
+					f.dispose();
+					admin();
+				}
+			});
+
+			returnButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent ae) {
+					f.dispose();
+					menuStart();
+				}
+			});
+
+		}
+
+	}
+
+	public void interestMenu() {
+		GuiComponents js = new GuiComponents();
+		f = js.menuFrame("Administrator Menu", 400, 300);
+
+		f.setVisible(true);
+
+		JComboBox<String> box = new JComboBox<String>();
+		for (int i = 0; i < customer.getAccounts().size(); i++) {
+
+			box.addItem(customer.getAccounts().get(i).getNumber());
+		}
+
+		box.getSelectedItem();
+
+		JPanel boxPanel = new JPanel();
+
+		JLabel label = new JLabel("Select an account to apply interest to:");
+		boxPanel.add(label);
+		boxPanel.add(box);
+		JPanel buttonPanel = new JPanel();
+		JButton continueButton = new JButton("Apply Interest");
+		JButton returnButton = new JButton("Return");
+		buttonPanel.add(continueButton);
+		buttonPanel.add(returnButton);
+		Container content = f.getContentPane();
+		content.setLayout(new GridLayout(2, 1));
+
+		content.add(boxPanel);
+		content.add(buttonPanel);
+
+		if (customer.getAccounts().isEmpty()) {
+			JOptionPane.showMessageDialog(f,
+					"This customer has no accounts! \n The admin must add acounts to this customer.", "Oops!",
+					JOptionPane.INFORMATION_MESSAGE);
+			f.dispose();
+			admin();
+		} else {
+
+			for (int i = 0; i < customer.getAccounts().size(); i++) {
+				if (customer.getAccounts().get(i).getNumber() == box.getSelectedItem()) {
+					acc = customer.getAccounts().get(i);
+				}
+			}
+
+			continueButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent ae) {
+					String euro = "\u20ac";
+					double interest = 0;
+					boolean loop = true;
+
+					while (loop) {
+						String interestString = JOptionPane.showInputDialog(f,
+								"Enter interest percentage you wish to apply: \n NOTE: Please enter a numerical value. (with no percentage sign) \n E.g: If you wish to apply 8% interest, enter '8'");// the
+						// isNumeric method tests to see if the string entered was numeric.
+						if (isNumeric(interestString)) {
+
+							interest = Double.parseDouble(interestString);
+							loop = false;
+
+							acc.setBalance(acc.getBalance() + (acc.getBalance() * (interest / 100)));
+
+							JOptionPane.showMessageDialog(f,
+									interest + "% interest applied. \n new balance = " + acc.getBalance() + euro,
+									"Success!", JOptionPane.INFORMATION_MESSAGE);
+						}
+
+						else {
+							JOptionPane.showMessageDialog(f, "You must enter a numerical value!", "Oops!",
+									JOptionPane.INFORMATION_MESSAGE);
+						}
+
+					}
+
+					f.dispose();
+					admin();
+				}
+			});
+
+			returnButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent ae) {
+					f.dispose();
+					menuStart();
+				}
+			});
+
+		}
+	}
+
+	public void navigateMenu() {
+		if (customerList.isEmpty()) {
+			JOptionPane.showMessageDialog(null, "There are currently no customers to display. ");
+			admin();
+		} else {
+
+			JButton first, previous, next, last, cancel;
+			JPanel gridPanel, buttonPanel, cancelPanel;
+
+			Container content = getContentPane();
+
+			content.setLayout(new BorderLayout());
+
+			buttonPanel = new JPanel();
+			gridPanel = new JPanel(new GridLayout(8, 2));
+			cancelPanel = new JPanel();
+
+			firstNameLabel = new JLabel("First Name:", SwingConstants.LEFT);
+			surnameLabel = new JLabel("Surname:", SwingConstants.LEFT);
+			pPPSLabel = new JLabel("PPS Number:", SwingConstants.LEFT);
+			dOBLabel = new JLabel("Date of birth", SwingConstants.LEFT);
+			customerIDLabel = new JLabel("CustomerID:", SwingConstants.LEFT);
+			passwordLabel = new JLabel("Password:", SwingConstants.LEFT);
+			firstNameTextField = new JTextField(20);
+			surnameTextField = new JTextField(20);
+			pPSTextField = new JTextField(20);
+			dOBTextField = new JTextField(20);
+			customerIDTextField = new JTextField(20);
+			passwordTextField = new JTextField(20);
+
+			first = new JButton("First");
+			previous = new JButton("Previous");
+			next = new JButton("Next");
+			last = new JButton("Last");
+			cancel = new JButton("Cancel");
+
+			firstNameTextField.setText(customerList.get(0).getFirstName());
+			surnameTextField.setText(customerList.get(0).getSurname());
+			pPSTextField.setText(customerList.get(0).getPPS());
+			dOBTextField.setText(customerList.get(0).getDOB());
+			customerIDTextField.setText(customerList.get(0).getCustomerID());
+			passwordTextField.setText(customerList.get(0).getPassword());
+
+			firstNameTextField.setEditable(false);
+			surnameTextField.setEditable(false);
+			pPSTextField.setEditable(false);
+			dOBTextField.setEditable(false);
+			customerIDTextField.setEditable(false);
+			passwordTextField.setEditable(false);
+
+			gridPanel.add(firstNameLabel);
+			gridPanel.add(firstNameTextField);
+			gridPanel.add(surnameLabel);
+			gridPanel.add(surnameTextField);
+			gridPanel.add(pPPSLabel);
+			gridPanel.add(pPSTextField);
+			gridPanel.add(dOBLabel);
+			gridPanel.add(dOBTextField);
+			gridPanel.add(customerIDLabel);
+			gridPanel.add(customerIDTextField);
+			gridPanel.add(passwordLabel);
+			gridPanel.add(passwordTextField);
+
+			buttonPanel.add(first);
+			buttonPanel.add(previous);
+			buttonPanel.add(next);
+			buttonPanel.add(last);
+
+			cancelPanel.add(cancel);
+
+			content.add(gridPanel, BorderLayout.NORTH);
+			content.add(buttonPanel, BorderLayout.CENTER);
+			content.add(cancelPanel, BorderLayout.AFTER_LAST_LINE);
+			first.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent ae) {
+					position = 0;
+					firstNameTextField.setText(customerList.get(0).getFirstName());
+					surnameTextField.setText(customerList.get(0).getSurname());
+					pPSTextField.setText(customerList.get(0).getPPS());
+					dOBTextField.setText(customerList.get(0).getDOB());
+					customerIDTextField.setText(customerList.get(0).getCustomerID());
+					passwordTextField.setText(customerList.get(0).getPassword());
+				}
+			});
+
+			previous.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent ae) {
+
+					if (position < 1) {
+						// don't do anything
+					} else {
+						position = position - 1;
+
+						firstNameTextField.setText(customerList.get(position).getFirstName());
+						surnameTextField.setText(customerList.get(position).getSurname());
+						pPSTextField.setText(customerList.get(position).getPPS());
+						dOBTextField.setText(customerList.get(position).getDOB());
+						customerIDTextField.setText(customerList.get(position).getCustomerID());
+						passwordTextField.setText(customerList.get(position).getPassword());
+					}
+				}
+			});
+
+			next.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent ae) {
+
+					if (position == customerList.size() - 1) {
+						// don't do anything
+					} else {
+						position = position + 1;
+
+						firstNameTextField.setText(customerList.get(position).getFirstName());
+						surnameTextField.setText(customerList.get(position).getSurname());
+						pPSTextField.setText(customerList.get(position).getPPS());
+						dOBTextField.setText(customerList.get(position).getDOB());
+						customerIDTextField.setText(customerList.get(position).getCustomerID());
+						passwordTextField.setText(customerList.get(position).getPassword());
+					}
+
+				}
+			});
+
+			last.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent ae) {
+
+					position = customerList.size() - 1;
+
+					firstNameTextField.setText(customerList.get(position).getFirstName());
+					surnameTextField.setText(customerList.get(position).getSurname());
+					pPSTextField.setText(customerList.get(position).getPPS());
+					dOBTextField.setText(customerList.get(position).getDOB());
+					customerIDTextField.setText(customerList.get(position).getCustomerID());
+					passwordTextField.setText(customerList.get(position).getPassword());
+				}
+			});
+
+			cancel.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent ae) {
+					dispose();
+					admin();
+				}
+			});
+			setContentPane(content);
+			setSize(400, 300);
+			setVisible(true);
+		}
+	}
+
+	public void accountMenu() {
+		if (customerList.isEmpty()) {
+			JOptionPane.showMessageDialog(f, "There are no customers yet!", "Oops!", JOptionPane.INFORMATION_MESSAGE);
+			f.dispose();
+			admin();
+		} else {
+			boolean loop = true;
+
+			boolean found = false;
+
+			while (loop) {
+				Object customerID = JOptionPane.showInputDialog(f,
+						"Customer ID of Customer You Wish to Add an Account to:");
+
+				for (Customer aCustomer : customerList) {
+
+					if (aCustomer.getCustomerID().equals(customerID)) {
+						found = true;
+						customer = aCustomer;
+					}
+				}
+
+				if (!found) {
+					int reply = JOptionPane.showConfirmDialog(null, null, "User not found. Try again?",
+							JOptionPane.YES_NO_OPTION);
+					if (reply == JOptionPane.YES_OPTION) {
+						loop = true;
+					} else if (reply == JOptionPane.NO_OPTION) {
+						f.dispose();
+						loop = false;
+
+						admin();
+					}
+				} else {
+					loop = false;
+					// a combo box in an dialog box that asks the admin
+					// what type of account they wish to create
+					// (deposit/current)
+					String[] choices = { "Current Account", "Deposit Account" };
+					String account = (String) JOptionPane.showInputDialog(null, "Please choose account type",
+							"Account Type", JOptionPane.QUESTION_MESSAGE, null, choices, choices[1]);
+
+					if (account.equals("Current Account")) {
+						// create current account
+						boolean valid = true;
+						double balance = 0;
+						String number = String.valueOf(
+								"C" + (customerList.indexOf(customer) + 1) * 10 + (customer.getAccounts().size() + 1));
+
+						// simple algorithm generates the account number
+
+						ArrayList<AccountTransaction> transactionList = new ArrayList<AccountTransaction>();
+						int randomPIN = (int) (Math.random() * 9000) + 1000;
+						String pin = String.valueOf(randomPIN);
+
+						ATMCard atm = new ATMCard(randomPIN, valid);
+
+						CustomerCurrentAccount current = new CustomerCurrentAccount(atm, number, balance,
+								transactionList);
+
+						customer.getAccounts().add(current);
+						JOptionPane.showMessageDialog(f, "Account number = " + number + "\n PIN = " + pin,
+								"Account created.", JOptionPane.INFORMATION_MESSAGE);
+
+						f.dispose();
+						admin();
+					}
+
+					if (account.equals("Deposit Account")) {
+						// create deposit account
+
+						double balance = 0, interest = 0;
+						String number = String.valueOf(
+								"D" + (customerList.indexOf(customer) + 1) * 10 + (customer.getAccounts().size() + 1));// this
+						// simple algorithm generates the accountnumber
+						ArrayList<AccountTransaction> transactionList = new ArrayList<AccountTransaction>();
+
+						CustomerDepositAccount deposit = new CustomerDepositAccount(interest, number, balance,
+								transactionList);
+
+						customer.getAccounts().add(deposit);
+						JOptionPane.showMessageDialog(f, "Account number = " + number, "Account created.",
+								JOptionPane.INFORMATION_MESSAGE);
+
+						f.dispose();
+						admin();
+					}
+
+				}
+			}
+		}
+
+	}
+
+	public void deleteCustomerMenu() {
+		boolean found = true, loop = true;
+
+		if (customerList.isEmpty()) {
+			JOptionPane.showMessageDialog(null, "There are currently no customers to display. ");
+			dispose();
+			admin();
+		} else {
+			{
+				Object customerID = JOptionPane.showInputDialog(f, "Customer ID of Customer You Wish to Delete:");
+
+				for (Customer aCustomer : customerList) {
+
+					if (aCustomer.getCustomerID().equals(customerID)) {
+						found = true;
+						customer = aCustomer;
+						loop = false;
+					}
+				}
+
+				if (!found) {
+					int reply = JOptionPane.showConfirmDialog(null, null, "User not found. Try again?",
+							JOptionPane.YES_NO_OPTION);
+					if (reply == JOptionPane.YES_OPTION) {
+						loop = true;
+					} else if (reply == JOptionPane.NO_OPTION) {
+						f.dispose();
+						loop = false;
+
+						admin();
+					}
+				} else {
+					if (customer.getAccounts().size() > 0) {
+						JOptionPane.showMessageDialog(f,
+								"This customer has accounts. \n You must delete a customer's accounts before deleting a customer ",
+								"Oops!", JOptionPane.INFORMATION_MESSAGE);
+					} else {
+						customerList.remove(customer);
+						JOptionPane.showMessageDialog(f, "Customer Deleted ", "Success.",
+								JOptionPane.INFORMATION_MESSAGE);
+					}
+				}
+
+			}
+		}
+
+	}
+
+	public static boolean isNumeric(String str) // a method that tests if string is numeric
 	{
 		try {
 			double d = Double.parseDouble(str);
