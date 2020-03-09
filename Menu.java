@@ -42,6 +42,19 @@ public class Menu extends JFrame {
 		return bt;
 	}
 
+	private JFrame menuFrame(String type) {
+		f = new JFrame(type);
+		f.setSize(400, 300);
+		f.setLocation(200, 200);
+		f.addWindowListener(new WindowAdapter() {
+			public void windowClosing(WindowEvent we) {
+				System.exit(0);
+			}
+		});
+		return f;
+
+	}
+
 	public void menuStart() {
 		/*
 		 * The menuStart method asks the user if they are a new customer, an existing
@@ -50,14 +63,7 @@ public class Menu extends JFrame {
 		 * customer or admin.
 		 */
 
-		f = new JFrame("User Type");
-		f.setSize(400, 300);
-		f.setLocation(200, 200);
-		f.addWindowListener(new WindowAdapter() {
-			public void windowClosing(WindowEvent we) {
-				System.exit(0);
-			}
-		});
+		f = menuFrame("User Type");
 
 		JPanel userTypePanel = new JPanel();
 		final ButtonGroup userType = new ButtonGroup();
@@ -184,14 +190,7 @@ public class Menu extends JFrame {
 
 				customerLoop("Customer ID of Customer You Wish to Apply Charges to:");
 				f.dispose();
-				f = new JFrame("Administrator Menu");
-				f.setSize(400, 300);
-				f.setLocation(200, 200);
-				f.addWindowListener(new WindowAdapter() {
-					public void windowClosing(WindowEvent we) {
-						System.exit(0);
-					}
-				});
+				f = menuFrame("Administrator Menu");
 				f.setVisible(true);
 
 				JComboBox<String> box = new JComboBox<String>();
@@ -310,14 +309,8 @@ public class Menu extends JFrame {
 							}
 						} else {
 							f.dispose();
-							f = new JFrame("Administrator Menu");
-							f.setSize(400, 300);
-							f.setLocation(200, 200);
-							f.addWindowListener(new WindowAdapter() {
-								public void windowClosing(WindowEvent we) {
-									System.exit(0);
-								}
-							});
+							f = menuFrame("Administrator Menu");
+
 							f.setVisible(true);
 
 							JComboBox<String> box = new JComboBox<String>();
@@ -856,15 +849,10 @@ public class Menu extends JFrame {
 	}
 
 	public void customer(Customer e1) {
-		f = new JFrame("Customer Menu");
+		f = menuFrame("Customer Menu");
+
 		e1 = e;
-		f.setSize(400, 300);
-		f.setLocation(200, 200);
-		f.addWindowListener(new WindowAdapter() {
-			public void windowClosing(WindowEvent we) {
-				System.exit(0);
-			}
-		});
+
 		f.setVisible(true);
 
 		if (e.getAccounts().size() == 0) {
@@ -916,14 +904,7 @@ public class Menu extends JFrame {
 
 					f.dispose();
 
-					f = new JFrame("Customer Menu");
-					f.setSize(400, 300);
-					f.setLocation(200, 200);
-					f.addWindowListener(new WindowAdapter() {
-						public void windowClosing(WindowEvent we) {
-							System.exit(0);
-						}
-					});
+					f = menuFrame("Customer Menu");
 					f.setVisible(true);
 
 					JPanel statementPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -1334,14 +1315,7 @@ public class Menu extends JFrame {
 
 	private JFrame editGui() {
 
-		f = new JFrame("Administrator Menu");
-		f.setSize(400, 300);
-		f.setLocation(200, 200);
-		f.addWindowListener(new WindowAdapter() {
-			public void windowClosing(WindowEvent we) {
-				System.exit(0);
-			}
-		});
+		f = menuFrame("Administrator Menu");
 
 		firstNameLabel = new JLabel("First Name:", SwingConstants.LEFT);
 		surnameLabel = new JLabel("Surname:", SwingConstants.LEFT);
@@ -1411,6 +1385,7 @@ public class Menu extends JFrame {
 				customer.setPassword(passwordTextField.getText());
 
 				JOptionPane.showMessageDialog(null, "Changes Saved.");
+
 			}
 		});
 
