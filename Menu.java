@@ -68,24 +68,17 @@ public class Menu extends JFrame {
 			public void actionPerformed(ActionEvent ae) {
 				String user = userType.getSelection().getActionCommand();
 
-				// if user selects NEW
-				// CUSTOMER--------------------------------------------------------------------------------------
+				// if user selects NEW CUSTOMER
 				if (user.equals("New Customer")) {
 					f.dispose();
 					existCustomer();
 				}
 
-				// ------------------------------------------------------------------------------------------------------------------
-
-				// if user select
-				// ADMIN----------------------------------------------------------------------------------------------
+				// if user select ADMIN
 				if (user.equals("Administrator")) {
 					selectAdmin();
 				}
-				// ----------------------------------------------------------------------------------------------------------------
-
 				// if user selects CUSTOMER
-				// ----------------------------------------------------------------------------------------
 				if (user.equals("Existing Customer")) {
 					customers();
 					// -----------------------------------------------------------------------------------------------------------------------
